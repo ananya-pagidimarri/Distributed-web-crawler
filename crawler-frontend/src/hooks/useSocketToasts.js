@@ -4,7 +4,9 @@ import { toast } from 'react-hot-toast';
 
 export default function useSocketToasts() {
   useEffect(() => {
-    const socket = io('');
+    const socket = io(import.meta.env.VITE_API_URL || '', {
+      transports: ['websocket', 'polling']
+    });
 
     socket.on('connect', () => {
       console.log('Connected to Crawler Socket.IO server:', socket.id);

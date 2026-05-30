@@ -3,7 +3,7 @@
  * Configures Kafka producer for streaming crawler events to the Socket.IO server.
  */
 
-const { Kafka } = require('kafkajs');
+const { Kafka, Partitioners } = require('kafkajs');
 const { KAFKA_BROKER, KAFKA_CLIENT_ID } = require('../config/envConfig');
 const logger = require('../utils/logger');
 
@@ -16,7 +16,7 @@ const kafka = new Kafka({
   }
 });
 
-const producer = kafka.producer();
+const producer = kafka.producer({ createPartitioner: Partitioners.LegacyPartitioner });
 
 let isConnected = false;
 

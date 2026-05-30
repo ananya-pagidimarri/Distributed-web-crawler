@@ -35,7 +35,7 @@ module.exports = {
   KAFKA_TOPIC: process.env.KAFKA_TOPIC || 'url-frontier',
 
   // CORS
-  FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5173',
+  FRONTEND_URL: process.env.FRONTEND_URL || 'https://distributed-web-crawler-one.vercel.app',
 
   // Crawler settings
   MAX_PAGES_PER_DOMAIN: parseInt(process.env.MAX_PAGES_PER_DOMAIN) || 100,

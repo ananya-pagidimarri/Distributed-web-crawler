@@ -23,7 +23,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: FRONTEND_URL || 'http://localhost:5173',
+  origin: [FRONTEND_URL, 'http://localhost:5173', 'https://distributed-web-crawler-one.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -36,7 +36,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: FRONTEND_URL || 'http://localhost:5173',
+    origin: [FRONTEND_URL, 'http://localhost:5173', 'https://distributed-web-crawler-one.vercel.app'],
     methods: ['GET', 'POST']
   }
 });
