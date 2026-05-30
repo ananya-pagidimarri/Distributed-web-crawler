@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #030712; /* Dark slate-gray background */
+    color: #e2e8f0; /* Soft white text */
+    font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030712;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Glassmorphism Premium Cards */
+.card-premium {
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-premium:hover {
+  border-color: rgba(6, 182, 212, 0.4);
+  box-shadow: 0 10px 40px rgba(6, 182, 212, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Glowing animations for Active states */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(6, 182, 212, 0.2);
+    opacity: 0.9;
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(6, 182, 212, 0.6);
+    opacity: 1;
+  }
+}
+
+.glow-active {
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+/* Terminal style classes for Live Logging */
+.terminal-window {
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.terminal-header {
+  background: #0f172a;
+  border-bottom: 1px solid #1e293b;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.terminal-body {
+  padding: 12px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+/* Neon glow colors */
+.neon-cyan {
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
+}
+
+.neon-emerald {
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+/* Skeleton Loading Animation */
+@keyframes skeletonPulse {
+  0%, 100% {
+    background-color: rgba(30, 41, 59, 0.5);
+  }
+  50% {
+    background-color: rgba(51, 65, 85, 0.65);
+  }
+}
+
+.skeleton-loading {
+  animation: skeletonPulse 1.5s infinite ease-in-out;
+  border-radius: 4px;
+}
+
+/* Light Theme Magic Filter (Invert colors, preserve hues) */
+.light-theme {
+  filter: invert(1) hue-rotate(180deg);
+  background-color: white; /* Base layer fallback */
+}
+
+/* Prevent images, icons, and charts from being inverted */
+.light-theme img,
+.light-theme video,
+.light-theme svg {
+  filter: invert(1) hue-rotate(180deg);
+}
