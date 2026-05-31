@@ -18,16 +18,17 @@ let browserInstance = null;
 
 async function getBrowser() {
   if (!browserInstance) {
-    const isDev = NODE_ENV !== 'production' || process.platform === 'win32';
+    // Render sets process.env.RENDER='true' automatically.
+    const isCloud = process.env.RENDER || NODE_ENV === 'production' || process.platform === 'linux';
     
-    if (isDev) {
-      // Use the bloated standard puppeteer locally since it guarantees a bundled Chrome binary
+    if (!isCloud) {
+      // Local development (Windows/Mac)
       browserInstance = await puppeteer.launch({
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
         headless: true,
       });
     } else {
-      // Use the serverless sparticuz chromium on Render
+      // Production Serverless Cloud (Render/Linux)
       browserInstance = await puppeteerCore.launch({
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
