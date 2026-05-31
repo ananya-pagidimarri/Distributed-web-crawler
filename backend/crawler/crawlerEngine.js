@@ -281,7 +281,7 @@ async function stopCrawling() {
 }
 
 function isRunning() { return running; }
-function getVisitedCount() { return visitedUrls.size; }
+function getVisitedCount() { return visitedUrls.length; }
 
 module.exports = {
   startCrawling,
