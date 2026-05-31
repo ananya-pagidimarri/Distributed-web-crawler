@@ -607,28 +607,6 @@ admin
 ```
 
 ---
-
-# 📸 Screenshots
-
-## Login Page
-
-Add screenshot here
-
-```markdown
-![Login](screenshots/login.png)
-```
-
-## Dashboard
-
-```markdown
-![Dashboard](screenshots/dashboard.png)
-```
-
-## Search Page
-
-```markdown
-![Search](screenshots/search.png)
-```
 # 🛡 Security Features
 
 - JWT Authentication
