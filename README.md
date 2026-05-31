@@ -629,20 +629,6 @@ Add screenshot here
 ```markdown
 ![Search](screenshots/search.png)
 ```
-Yes, remove those badge lines because they are already present in your README and don't add any new information. Your README should start directly like this: 
-
-```md
-# CrawlX - Distributed Web Crawler & Search Engine
-
----
-
-# 🌐 Overview
-
-CrawlX is a scalable distributed web crawler and search engine platform designed to crawl websites, extract content, discover links, build searchable indexes, and monitor crawling operations in real time.
-
-The system uses MongoDB as a centralized distributed queue, allowing multiple crawler instances running on different machines to work together simultaneously without requiring Kafka, RabbitMQ, or Redis.
-
----
 # 🛡 Security Features
 
 - JWT Authentication
