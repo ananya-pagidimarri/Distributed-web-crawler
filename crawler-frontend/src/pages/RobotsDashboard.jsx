@@ -94,7 +94,7 @@ export default function RobotsDashboard({ user, logout }) {
                   <div className="text-sm text-slate-300 truncate">{b.url}</div>
                 </div>
                 <span className="text-[10px] text-slate-500">
-                  {formatDistanceToNow(new Date(b.addedAt))} ago
+                  {formatDistanceToNow(new Date(b.timestamp || Date.now()))} ago
                 </span>
               </div>
             ))}
