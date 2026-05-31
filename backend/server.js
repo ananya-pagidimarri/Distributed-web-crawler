@@ -121,6 +121,8 @@ initRecrawlCron();
 
 // Kafka worker threads removed
 
+const UrlQueue = require('./models/UrlQueueModel');
+
 // Start the server
 const workerId = `worker-${crypto.randomBytes(4).toString('hex')}`;
 WorkerNode.create({
@@ -130,6 +132,14 @@ WorkerNode.create({
   type: 'Indexer',
   status: 'idle',
   lastHeartbeat: new Date()
+}).catch(() => {});
+
+// Auto-resume crawler engine on boot if there's unfinished work
+UrlQueue.countDocuments({ status: 'pending' }).then(count => {
+  if (count > 0 && !crawlerEngine.isRunning()) {
+    logger.info(`[Boot] Found ${count} pending URLs in queue. Auto-resuming crawler engine...`);
+    crawlerEngine.startCrawling().catch(err => logger.error(`[Boot] Auto-resume failed: ${err.message}`));
+  }
 }).catch(() => {});
 
 let lastCpuUsage = process.cpuUsage();
