@@ -26,6 +26,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+app.set('trust proxy', 1); // Trust first proxy (Render)
 app.use(apiLimiter);
 
 // Create HTTP server and wrap express

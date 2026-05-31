@@ -274,7 +274,7 @@ async function startCrawling() {
 
 async function stopCrawling() {
   running = false;
-  visitedUrls.clear();
+  visitedUrls = new BloomFilter(100000, 4);
   await clearCache();
   await clearRateLimit();
   logger.info('[Orchestrator] Crawler manually stopped');
