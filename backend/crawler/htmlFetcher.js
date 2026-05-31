@@ -11,16 +11,36 @@ const puppeteer = require('puppeteer-core');
 const chromium = require('@sparticuz/chromium');
 const cheerio = require('cheerio');
 const logger = require('../utils/logger');
-const { FETCH_TIMEOUT_MS } = require('../config/envConfig');
+const { FETCH_TIMEOUT_MS, NODE_ENV } = require('../config/envConfig');
+const fs = require('fs');
 
 let browserInstance = null;
+
+function getLocalExecutablePath() {
+  if (process.platform === 'win32') {
+    const winPaths = [
+      'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+      'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+      'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+    ];
+    for (const p of winPaths) {
+      if (fs.existsSync(p)) return p;
+    }
+  } else if (process.platform === 'darwin') {
+    return '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+  }
+  return '/usr/bin/google-chrome';
+}
+
 async function getBrowser() {
   if (!browserInstance) {
+    const isDev = NODE_ENV !== 'production' || process.platform === 'win32';
+    
     browserInstance = await puppeteer.launch({
-      args: chromium.args,
+      args: isDev ? ['--no-sandbox', '--disable-setuid-sandbox'] : chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
+      executablePath: isDev ? getLocalExecutablePath() : await chromium.executablePath(),
+      headless: isDev ? true : chromium.headless,
     });
   }
   return browserInstance;
