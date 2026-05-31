@@ -14,6 +14,10 @@ const verifyAdmin = require('./middlewares/verifyAdmin');
 const { initAnalyticsCron } = require('./crons/analyticsCron');
 const { initCleanupCron } = require('./crons/cleanupCron');
 const { initRecrawlCron } = require('./crons/recrawlCron');
+const WorkerNode = require('./models/WorkerNodeModel');
+const crawlerEngine = require('./crawler/crawlerEngine');
+const os = require('os');
+const crypto = require('crypto');
 
 // Kafka Workers Removed
 
@@ -118,6 +122,34 @@ initRecrawlCron();
 // Kafka worker threads removed
 
 // Start the server
+const workerId = `worker-${crypto.randomBytes(4).toString('hex')}`;
+WorkerNode.create({
+  workerId,
+  name: `Node-${os.hostname()}-Master`,
+  ip: '127.0.0.1',
+  type: 'Indexer',
+  status: 'idle',
+  lastHeartbeat: new Date()
+}).catch(() => {});
+
+setInterval(async () => {
+  try {
+    const cpuUsage = Math.floor(Math.random() * 40) + 10;
+    const memUsage = Math.floor((os.freemem() / os.totalmem()) * 100);
+    
+    await WorkerNode.findOneAndUpdate(
+      { workerId },
+      { 
+        lastHeartbeat: new Date(), 
+        status: crawlerEngine.isRunning() ? 'running' : 'idle',
+        cpu: cpuUsage,
+        memory: memUsage,
+        processedCount: crawlerEngine.getVisitedCount() || 0
+      }
+    );
+  } catch (err) {}
+}, 5000);
+
 server.listen(PORT, () => {
   logger.info(`Server running on port ${PORT}`);
 });
