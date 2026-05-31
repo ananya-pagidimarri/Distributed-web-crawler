@@ -62,6 +62,7 @@ function App() {
     <BrowserRouter>
       <Toaster
         position="top-right"
+        maxToasts={3}
         toastOptions={{
           style: {
             background: 'rgba(15, 23, 42, 0.95)',

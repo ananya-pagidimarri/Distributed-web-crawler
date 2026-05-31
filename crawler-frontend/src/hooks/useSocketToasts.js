@@ -17,10 +17,12 @@ export default function useSocketToasts() {
       
       switch (event) {
         case 'url.queued':
-          toast(`Queued [${data.priority}]: ${data.url}`, { icon: 'ℹ️', style: { background: '#1e3a8a', color: '#bfdbfe', border: '1px solid #1e40af' } });
+          // High-frequency event: completely disabled for UI performance.
+          // toast(`Queued [${data.priority}]: ${data.url}`, { ... });
           break;
         case 'page.crawled':
-          toast(`Crawled: ${data.url}`, { icon: '✅', style: { background: '#064e3b', color: '#6ee7b7', border: '1px solid #065f46' } });
+          // High-frequency event: completely disabled for UI performance.
+          // toast(`Crawled: ${data.url}`, { ... });
           break;
         case 'crawl.failed':
           toast(`Failed: ${data.url}`, { icon: '❌', style: { background: '#7f1d1d', color: '#fca5a5', border: '1px solid #991b1b' } });

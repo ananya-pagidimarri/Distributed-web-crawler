@@ -17,11 +17,21 @@ export default function MainLayout({ children, user, logout }) {
   // Initialize Socket.IO real-time toasts
   useSocketToasts();
 
-  const toggleCrawlState = () => {
-    if (globalStatus === 'crawling') {
-      dispatch(setGlobalStatus('paused'));
-    } else {
-      dispatch(setGlobalStatus('crawling'));
+  const toggleCrawlState = async () => {
+    try {
+      const endpoint = globalStatus === 'crawling' ? '/api/crawler/stop' : '/api/crawler/start';
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${user?.token}`
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        dispatch(setGlobalStatus(data.status));
+      }
+    } catch (err) {
+      console.error('Failed to toggle crawler state:', err);
     }
   };
 
