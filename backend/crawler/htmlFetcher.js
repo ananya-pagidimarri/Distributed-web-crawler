@@ -128,6 +128,10 @@ async function fetchPage(url) {
         $('meta[property="og:description"]').attr('content') ||
         $('meta[name="twitter:description"]').attr('content') || '';
 
+      // ── Clean DOM ─────────────────────────────────────
+      // Remove noisy tags BEFORE extracting description or content
+      $('script, style, nav, footer, header, aside, noscript').remove();
+
       // Fallback: first meaningful paragraph
       if (!description.trim()) {
         $('p').each((_, el) => {
@@ -159,7 +163,6 @@ async function fetchPage(url) {
       const links = [...new Set(rawLinks)].slice(0, 100); // dedup, max 100
 
       // ── Extract text content ───────────────────────────
-      $('script, style, nav, footer, header, aside, noscript').remove();
       const content = $('body').text()
         .replace(/\s+/g, ' ')
         .trim()
