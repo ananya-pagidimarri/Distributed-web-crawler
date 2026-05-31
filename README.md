@@ -1,98 +1,710 @@
-# CrawlX - Distributed Web Crawler
+# CrawlX - Distributed Web Crawler & Search Engine
 
-CrawlX is a high-performance, distributed web crawler and indexing engine built with a real-time React dashboard. It is designed to autonomously navigate the web, extract data, and intelligently scale its workload across multiple computing nodes using a centralized MongoDB architecture.
+## 🌐 Overview
 
-## 🚀 Key Features
+CrawlX is a scalable distributed web crawler and indexing platform designed to autonomously crawl websites, extract valuable information, index pages, and provide real-time monitoring through a modern React dashboard.
 
-- **Distributed Architecture:** By connecting multiple worker nodes (e.g., your local laptop and a cloud server) to the same MongoDB database, the workload is automatically distributed. 
-- **Real-Time Telemetry Dashboard:** A stunning, dark-mode React frontend that provides live WebSocket telemetry, displaying CPU saturation, memory usage, and real-time crawl speeds across all connected worker nodes.
-- **Ethical Crawling Engine:** Built-in `robots.txt` compliance. The crawler politely checks and respects host rules and crawl delays before fetching pages, preventing IP bans.
-- **Serverless Cloud Rendering:** Intelligently detects cloud environments (like Render) and seamlessly switches to the lightweight `@sparticuz/chromium` serverless browser, bypassing the need for heavy Linux graphical dependencies.
-- **Bloom Filter Deduplication:** Utilizes an extreme-performance RAM-based Bloom Filter to deduplicate millions of URLs in milliseconds without taxing the database.
-- **Auto-Resume & Self-Healing:** The crawler engine automatically wakes from sleep when new seed URLs are injected and seamlessly resumes operations after a server reboot.
+The system is built using a centralized MongoDB architecture that allows multiple crawler nodes running on different machines to collaborate and process URLs simultaneously.
 
-## 🛠️ Technology Stack
+Unlike traditional crawlers that require Kafka, RabbitMQ, or Redis queues, CrawlX uses MongoDB as a distributed task queue, making deployment simpler and more cost-effective.
 
-- **Frontend:** React, TailwindCSS, Recharts, Lucide Icons, Vite
-- **Backend:** Node.js, Express.js, Socket.io
-- **Database:** MongoDB (Mongoose)
-- **Scraping Engine:** Puppeteer (Local) & Puppeteer-Core + Sparticuz Chromium (Production Cloud)
-- **Data Structures:** Bloom Filters, BFS (Breadth-First Search) Queue
+---
 
-## ⚙️ System Architecture
+# 🚀 Project Objectives
 
-CrawlX utilizes a **Monolithic Super-Server** design to save on cloud costs (eliminating the need for expensive message brokers like Kafka). 
-- **`server.js`** acts as both the API Gateway for the React frontend and the Master Orchestrator for the crawler engine.
-- You can spin up as many instances of `server.js` as you want across different computers. Because they all read and write to the same `UrlQueue` collection in MongoDB, they instantly form a distributed hive-mind and process the queue in parallel.
+The primary goals of CrawlX are:
 
-## 💻 Local Development Setup
+* Crawl websites automatically
+* Extract metadata and page content
+* Discover new URLs
+* Build a searchable index
+* Monitor crawler performance in real-time
+* Scale horizontally across multiple servers
+* Respect robots.txt rules
+* Avoid duplicate crawling
+* Recover automatically after crashes
 
-### 1. Prerequisites
-- Node.js (v18+)
-- A MongoDB Atlas Cluster (or local MongoDB)
+---
 
-### 2. Clone the Repository
-```bash
-git clone https://github.com/ananya-pagidimarri/Distributed-web-crawler.git
-cd Distributed-web-crawler
+# 🏗 System Architecture
+
+## High-Level Architecture
+
+```text
+                    ┌─────────────────────┐
+                    │    React Dashboard   │
+                    └──────────┬──────────┘
+                               │
+                         Socket.IO
+                               │
+                               ▼
+                 ┌─────────────────────────┐
+                 │      Express Server      │
+                 │      (server.js)         │
+                 └──────────┬──────────────┘
+                            │
+          ┌─────────────────┼─────────────────┐
+          │                 │                 │
+          ▼                 ▼                 ▼
+   Crawl Engine      Search Engine      Auth APIs
+          │
+          ▼
+    MongoDB Atlas
+          │
+          ▼
+   Shared Distributed
+        URL Queue
+          │
+ ┌────────┼────────┐
+ │                 │
+ ▼                 ▼
+Worker 1       Worker 2
+(Local PC)   (Cloud Server)
 ```
 
-### 3. Backend Setup
+---
+
+# ⚙️ Core Components
+
+## 1. Frontend Dashboard
+
+The frontend is developed using React and Tailwind CSS.
+
+### Responsibilities
+
+* User Authentication
+* Dashboard Analytics
+* Real-Time Monitoring
+* Search Interface
+* URL Submission
+* Queue Monitoring
+* Worker Monitoring
+
+### Technologies
+
+* React.js
+* Vite
+* TailwindCSS
+* Socket.io Client
+* Recharts
+* Lucide React Icons
+
+---
+
+## Dashboard Modules
+
+### Login Page
+
+Provides secure authentication using JWT tokens.
+
+Features:
+
+* Admin Login
+* Token Storage
+* Protected Routes
+* Session Management
+
+---
+
+### Dashboard Page
+
+Displays crawler statistics.
+
+Metrics:
+
+* Total Crawled Pages
+* Active Workers
+* Queue Size
+* Crawl Speed
+* Memory Usage
+* CPU Utilization
+
+---
+
+### Search Page
+
+Allows users to search indexed websites.
+
+Search Features:
+
+* Keyword Search
+* Indexed Results
+* URL Ranking
+* Metadata Display
+
+---
+
+### URL Submission Page
+
+Allows administrators to add seed URLs.
+
+Workflow:
+
+```text
+Admin Adds URL
+      │
+      ▼
+Backend API
+      │
+      ▼
+MongoDB Queue
+      │
+      ▼
+Crawler Picks URL
+```
+
+---
+
+### Worker Monitoring
+
+Displays:
+
+* Worker ID
+* Worker Status
+* Pages Crawled
+* CPU Usage
+* RAM Usage
+* Crawl Speed
+
+---
+
+# 🔧 Backend Architecture
+
+The backend acts as:
+
+1. API Server
+2. Search Server
+3. Master Orchestrator
+4. Distributed Worker
+
+All functionalities run inside a single Node.js application.
+
+---
+
+## Backend Technologies
+
+* Node.js
+* Express.js
+* Socket.io
+* Puppeteer
+* Mongoose
+* JWT Authentication
+
+---
+
+# 🔐 Authentication System
+
+### Registration Flow
+
+```text
+User Registration
+       │
+       ▼
+Validate Data
+       │
+       ▼
+Hash Password
+       │
+       ▼
+Store User
+       │
+       ▼
+Return Success
+```
+
+---
+
+### Login Flow
+
+```text
+Email + Password
+        │
+        ▼
+Find User
+        │
+        ▼
+Compare Password
+        │
+        ▼
+Generate JWT
+        │
+        ▼
+Send Token
+```
+
+---
+
+# 🌎 Distributed Crawling System
+
+The most powerful feature of CrawlX.
+
+Multiple servers can run simultaneously.
+
+Example:
+
+```text
+Laptop
+   │
+   ▼
+
+MongoDB Queue
+
+   ▲
+   │
+
+Cloud Server
+```
+
+Both workers:
+
+* Pull URLs
+* Crawl Pages
+* Store Results
+* Add New URLs
+
+simultaneously.
+
+---
+
+# 🕷 Crawling Engine Workflow
+
+## Step 1: Seed URL Injection
+
+Example:
+
+```text
+https://example.com
+```
+
+Stored in MongoDB queue.
+
+---
+
+## Step 2: URL Fetching
+
+Worker requests a URL from queue.
+
+```text
+Queue
+  │
+  ▼
+Worker
+```
+
+---
+
+## Step 3: robots.txt Validation
+
+Before crawling:
+
+```text
+example.com/robots.txt
+```
+
+Crawler checks:
+
+* Allowed paths
+* Disallowed paths
+* Crawl delays
+
+---
+
+## Step 4: Browser Launch
+
+### Local Development
+
+Uses:
+
+```javascript
+Puppeteer
+```
+
+### Production
+
+Uses:
+
+```javascript
+Puppeteer-Core
++
+Sparticuz Chromium
+```
+
+This reduces memory usage on cloud platforms.
+
+---
+
+## Step 5: Page Extraction
+
+Crawler extracts:
+
+* Title
+* Description
+* Keywords
+* Headings
+* Content
+* Internal Links
+
+---
+
+## Step 6: Link Discovery
+
+Example:
+
+```html
+<a href="/about">About</a>
+<a href="/contact">Contact</a>
+```
+
+Discovered URLs are normalized and queued.
+
+---
+
+## Step 7: URL Normalization
+
+Converts:
+
+```text
+https://site.com/?utm_source=facebook
+```
+
+to
+
+```text
+https://site.com
+```
+
+Removes:
+
+* utm_source
+* utm_campaign
+* fbclid
+* tracking parameters
+
+---
+
+## Step 8: Deduplication
+
+Before insertion:
+
+Bloom Filter checks URL.
+
+```text
+URL
+ │
+ ▼
+Bloom Filter
+ │
+ ├─ Exists → Ignore
+ │
+ └─ New → Insert
+```
+
+Benefits:
+
+* O(1) lookup
+* Memory Efficient
+* Millions of URLs
+
+---
+
+## Step 9: Store Indexed Data
+
+Saved into MongoDB.
+
+Stored Fields:
+
+```json
+{
+  "url": "",
+  "title": "",
+  "description": "",
+  "content": "",
+  "links": []
+}
+```
+
+---
+
+# 📊 Real-Time Telemetry
+
+Uses Socket.IO.
+
+Workers continuously emit:
+
+```javascript
+{
+  cpuUsage,
+  memoryUsage,
+  crawlRate,
+  pagesProcessed
+}
+```
+
+Dashboard updates instantly without page refresh.
+
+---
+
+# 🗄 Database Collections
+
+## Users
+
+```javascript
+{
+  email,
+  password,
+  role
+}
+```
+
+---
+
+## UrlQueue
+
+```javascript
+{
+  url,
+  status,
+  priority,
+  assignedWorker
+}
+```
+
+---
+
+## IndexedPages
+
+```javascript
+{
+  url,
+  title,
+  content,
+  metadata
+}
+```
+
+---
+
+## WorkerStats
+
+```javascript
+{
+  workerId,
+  cpu,
+  memory,
+  pagesCrawled
+}
+```
+
+---
+
+# 🔍 Search Engine Workflow
+
+```text
+User Searches
+      │
+      ▼
+Search API
+      │
+      ▼
+MongoDB Index
+      │
+      ▼
+Matching Pages
+      │
+      ▼
+Results Returned
+```
+
+Search considers:
+
+* Page Title
+* Meta Description
+* Content Keywords
+
+---
+
+# 🔄 Auto Resume System
+
+When server restarts:
+
+```text
+Server Crash
+      │
+      ▼
+Restart
+      │
+      ▼
+Load Queue State
+      │
+      ▼
+Resume Crawling
+```
+
+No progress is lost.
+
+---
+
+# ☁️ Deployment Architecture
+
+## Backend Deployment
+
+Platform:
+
+Render
+
+Responsibilities:
+
+* APIs
+* Crawlers
+* WebSockets
+
+---
+
+## Frontend Deployment
+
+Platform:
+
+Vercel
+
+Responsibilities:
+
+* Dashboard
+* Search Interface
+* Analytics
+
+---
+
+## Database
+
+Platform:
+
+MongoDB Atlas
+
+Responsibilities:
+
+* Queue Storage
+* User Storage
+* Search Index
+
+---
+
+# 🧠 Advanced Features
+
+### Bloom Filter Deduplication
+
+Prevents duplicate URLs.
+
+---
+
+### robots.txt Compliance
+
+Ensures ethical crawling.
+
+---
+
+### Distributed Workers
+
+Unlimited horizontal scaling.
+
+---
+
+### Live Monitoring
+
+Real-time crawler insights.
+
+---
+
+### Automatic Recovery
+
+Resumes after failures.
+
+---
+
+### Cloud Optimized
+
+Works efficiently on Render.
+
+---
+
+# 📈 Performance Optimizations
+
+* Bloom Filters
+* URL Canonicalization
+* Shared Mongo Queue
+* Headless Chromium
+* Incremental Crawling
+* Memory Monitoring
+
+---
+
+# 🔮 Future Enhancements
+
+### Page Ranking Algorithm
+
+Implement PageRank.
+
+---
+
+### AI Content Summarization
+
+Generate page summaries using AI.
+
+---
+
+### Search Result Ranking
+
+Improve relevance scoring.
+
+---
+
+### Screenshot Capture
+
+Store webpage previews.
+
+---
+
+### Elasticsearch Integration
+
+Enterprise-scale search.
+
+---
+
+### Multi-Language Crawling
+
+Support global websites.
+
+---
+
+# 🛠 Local Setup
+
+## Backend
+
 ```bash
 cd backend
 npm install
-```
-Create a `.env` file in the `backend` directory:
-```env
-PORT=5000
-NODE_ENV=development
-MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/crawlx
-JWT_SECRET=super_secret_key
-DEFAULT_ADMIN_EMAIL=admin@crawlx.io
-DEFAULT_ADMIN_PASSWORD=admin
-```
-Start the backend server:
-```bash
 npm run dev
 ```
 
-### 4. Frontend Setup
+---
+
+## Frontend
+
 ```bash
-cd ../crawler-frontend
+cd crawler-frontend
 npm install
-```
-Create a `.env` file in the `crawler-frontend` directory:
-```env
-VITE_API_URL=http://localhost:5000
-```
-Start the React dashboard:
-```bash
 npm run dev
 ```
 
-## ☁️ Cloud Deployment
+---
 
-### Backend (Render)
-1. Create a new **Web Service** on Render and connect your repository.
-2. Set the Root Directory to `backend`.
-3. Set the Build Command to: `npm install`
-4. Set the Start Command to: `npm start`
-5. **Crucial:** Add your `MONGO_URI` and `JWT_SECRET` in the Render Environment Variables tab. Render automatically injects `RENDER=true`, which tells the crawler to use the Serverless Chromium engine!
+# 🔑 Default Credentials
 
-### Frontend (Vercel)
-1. Import your repository into Vercel.
-2. Set the Root Directory to `crawler-frontend`.
-3. Vercel will automatically detect Vite and configure the build settings.
-4. Add the `VITE_API_URL` environment variable pointing to your deployed Render backend URL (e.g., `https://your-backend.onrender.com`).
-5. Click **Deploy**.
+```text
+Email:
+admin@crawlx.io
 
-## 🛡️ Accessing the Dashboard
+Password:
+admin
+```
 
-Once the frontend is running, navigate to the login page.
-- **Default Email:** `admin@crawlx.io`
-- **Default Password:** `admin`
 
-*(You can change these in your `.env` file).*
-
-## 📝 License
-This project is open-source and available under the MIT License.
