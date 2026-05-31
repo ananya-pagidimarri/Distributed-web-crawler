@@ -7,7 +7,8 @@
  * - Title, description, links, content extraction
  */
 
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
+const chromium = require('@sparticuz/chromium');
 const cheerio = require('cheerio');
 const logger = require('../utils/logger');
 const { FETCH_TIMEOUT_MS } = require('../config/envConfig');
@@ -16,8 +17,10 @@ let browserInstance = null;
 async function getBrowser() {
   if (!browserInstance) {
     browserInstance = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
     });
   }
   return browserInstance;
