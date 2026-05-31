@@ -553,7 +553,14 @@ export default function Home({ user, logout }) {
                       </div>
                     )}
                     
-                    <p className="text-[#bdc1c6] text-sm leading-relaxed">{result.Description}</p>
+                    <p className="text-[#bdc1c6] text-sm leading-relaxed">
+                      {result.CrawledAt && (
+                        <span className="text-[#9aa0a6] mr-2">
+                          {new Date(result.CrawledAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} —
+                        </span>
+                      )}
+                      {result.Description}
+                    </p>
 
                     {/* Clickable Keywords */}
                     {result.Keywords && result.Keywords.length > 0 && (

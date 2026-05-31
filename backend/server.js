@@ -101,9 +101,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// 404 fallback
-// Add dummy routes for simulated AI APIs
-// Disabled: AI Summary and Trending APIs using Elasticsearch were removed in Option A.
 
 app.use((err, req, res, next) => {
   logger.error(`[Express] Error: ${err.message}`);
@@ -119,7 +116,7 @@ initAnalyticsCron();
 initCleanupCron();
 initRecrawlCron();
 
-// Kafka worker threads removed
+
 
 const UrlQueue = require('./models/UrlQueueModel');
 
