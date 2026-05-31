@@ -70,6 +70,13 @@ async function enqueue(url, priorityLabel = 'Low', depth = 1, options = {}) {
     addedAt: new Date()
   });
   await emitEvent('crawler-events', 'url.queued', { url: normalized, priority: priorityLabel, depth });
+  
+  // Auto-wake the engine if it's currently sleeping
+  if (!running) {
+    logger.info('[Orchestrator] Auto-waking crawler engine due to new seeds...');
+    startCrawling().catch(err => logger.error(`[Orchestrator] Auto-start failed: ${err.message}`));
+  }
+
   return true;
 }
 
