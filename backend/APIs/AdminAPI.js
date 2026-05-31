@@ -280,7 +280,7 @@ router.get('/robots', async (req, res) => {
 // Returns URLs blocked by robots.txt policies
 router.get('/robots/blocked', async (req, res) => {
   try {
-    const blocked = await FailedUrl.find({ code: 403, reason: /robots/i }).sort({ addedAt: -1 }).limit(200);
+    const blocked = await FailedUrl.find({ code: 403, error: /robots/i }).sort({ timestamp: -1 }).limit(200);
     res.json({ success: true, blocked });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
