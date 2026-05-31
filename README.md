@@ -637,43 +637,12 @@ Works efficiently on Render.
 
 ---
 
-# 🔮 Future Enhancements
-
-### Page Ranking Algorithm
-
-Implement PageRank.
-
----
-
-### AI Content Summarization
-
-Generate page summaries using AI.
-
----
-
-### Search Result Ranking
-
-Improve relevance scoring.
-
----
-
 ### Screenshot Capture
 
 Store webpage previews.
 
 ---
 
-### Elasticsearch Integration
-
-Enterprise-scale search.
-
----
-
-### Multi-Language Crawling
-
-Support global websites.
-
----
 
 # 🛠 Local Setup
 
