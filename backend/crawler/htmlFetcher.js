@@ -100,7 +100,7 @@ async function fetchPage(url) {
       });
 
       const response = await page.goto(url, {
-        waitUntil: 'networkidle2',
+        waitUntil: 'domcontentloaded',
         timeout: FETCH_TIMEOUT_MS || 15000
       });
       
