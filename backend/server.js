@@ -132,10 +132,24 @@ WorkerNode.create({
   lastHeartbeat: new Date()
 }).catch(() => {});
 
+let lastCpuUsage = process.cpuUsage();
+let lastTime = process.hrtime.bigint();
+
 setInterval(async () => {
   try {
-    const cpuUsage = Math.floor(Math.random() * 40) + 10;
-    const memUsage = Math.floor((os.freemem() / os.totalmem()) * 100);
+    const currentCpuUsage = process.cpuUsage();
+    const currentTime = process.hrtime.bigint();
+    
+    // Calculate CPU usage percentage natively
+    const elapsedTime = Number(currentTime - lastTime) / 1000; // microseconds
+    const cpuTime = (currentCpuUsage.user - lastCpuUsage.user) + (currentCpuUsage.system - lastCpuUsage.system);
+    const cpuUsage = Math.min(100, Math.max(1, Math.floor((cpuTime / elapsedTime) * 100)));
+    
+    lastCpuUsage = currentCpuUsage;
+    lastTime = currentTime;
+    
+    // Real RAM usage of the Node process
+    const memUsage = Math.floor((process.memoryUsage().rss / os.totalmem()) * 100);
     
     await WorkerNode.findOneAndUpdate(
       { workerId },
