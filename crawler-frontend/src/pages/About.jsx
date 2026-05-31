@@ -112,8 +112,8 @@ export default function About() {
           <p>© 2026 CrawlX Technologies. All systems nominal.</p>
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div> Cluster Online</span>
-            <span className="hover:text-slate-300 transition-colors cursor-pointer">Documentation</span>
-            <span className="hover:text-slate-300 transition-colors cursor-pointer">API Reference</span>
+            <a href="https://github.com/ananya-pagidimarri/Distributed-web-crawler" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300 transition-colors cursor-pointer">Documentation</a>
+            <a href="https://github.com/ananya-pagidimarri/Distributed-web-crawler/tree/main/backend/APIs" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300 transition-colors cursor-pointer">API Reference</a>
           </div>
         </div>
       </footer>
