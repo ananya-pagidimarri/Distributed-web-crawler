@@ -1,11 +1,4 @@
 # CrawlX - Distributed Web Crawler & Search Engine
-
-![Node.js](https://img.shields.io/badge/Node.js-18+-green)
-![React](https://img.shields.io/badge/React-Frontend-blue)
-![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
-![Socket.IO](https://img.shields.io/badge/Socket.IO-Realtime-black)
-![License](https://img.shields.io/badge/License-MIT-yellow)
-
 ---
 
 # 🌐 Overview
@@ -636,3 +629,61 @@ Add screenshot here
 ```markdown
 ![Search](screenshots/search.png)
 ```
+Yes, remove those badge lines because they are already present in your README and don't add any new information. Your README should start directly like this: 
+
+```md
+# CrawlX - Distributed Web Crawler & Search Engine
+
+---
+
+# 🌐 Overview
+
+CrawlX is a scalable distributed web crawler and search engine platform designed to crawl websites, extract content, discover links, build searchable indexes, and monitor crawling operations in real time.
+
+The system uses MongoDB as a centralized distributed queue, allowing multiple crawler instances running on different machines to work together simultaneously without requiring Kafka, RabbitMQ, or Redis.
+
+---
+# 🛡 Security Features
+
+- JWT Authentication
+- Password Hashing using bcrypt
+- Protected Admin Routes
+- Input Validation
+- Environment Variable Protection
+
+---
+
+# 🔌 API Endpoints
+
+## Authentication
+
+POST /api/auth/login
+POST /api/auth/register
+
+## Search
+
+GET /api/search?q=keyword
+
+## Crawl
+
+POST /api/crawl/start
+POST /api/crawl/stop
+POST /api/crawl/add-url
+
+## Dashboard
+
+GET /api/dashboard/stats
+
+---
+
+# 🌟 Why CrawlX?
+
+Unlike traditional crawlers that require:
+- Kafka
+- RabbitMQ
+- Redis Streams
+
+CrawlX uses MongoDB as a distributed queue, reducing infrastructure cost and simplifying deployment while still supporting horizontal scaling.
+
+---
+
