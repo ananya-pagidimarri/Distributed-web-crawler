@@ -6,7 +6,8 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "worker": "node worker.js",
-    "worker:spawn": "start node worker.js"
+    "worker:spawn": "start node worker.js",
+    "render-build": "npm install && npx puppeteer browsers install chrome"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.19.1",
