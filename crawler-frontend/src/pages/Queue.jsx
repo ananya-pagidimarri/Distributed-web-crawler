@@ -202,7 +202,9 @@ export default function Queue({ user, logout }) {
         <div className="card-premium p-4 flex items-center justify-between border-l-4 border-l-rose-500">
           <div>
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Failed URLs</span>
-            <h3 className="text-2xl font-bold text-white mt-1">{failedUrls.length + (stats.failedCount || 0)}</h3>
+            <h3 className="text-2xl font-bold text-white mt-1">
+              {stats.failedCount !== undefined ? stats.failedCount : failedUrls.length}
+            </h3>
           </div>
           <div className="p-2 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-lg">
             <AlertTriangle className="w-4.5 h-4.5" />
