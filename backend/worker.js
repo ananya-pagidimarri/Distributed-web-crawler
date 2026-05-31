@@ -1,5 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
+const { MONGO_URI } = require('./config/envConfig');
 const crawlerEngine = require('./crawler/crawlerEngine');
 const WorkerNode = require('./models/WorkerNodeModel');
 const os = require('os');
@@ -12,7 +13,7 @@ async function startWorker() {
   console.log(`[Worker Boot] Initializing Crawler Node: ${workerId}`);
   
   // 1. Connect to MongoDB
-  await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/crawler');
+  await mongoose.connect(MONGO_URI);
   console.log(`[Worker Boot] Connected to MongoDB`);
 
   // 2. Register node in telemetry database

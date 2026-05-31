@@ -23,16 +23,9 @@ module.exports = {
   REDIS_PASSWORD: process.env.REDIS_PASSWORD || '',
   REDIS_URL: process.env.REDIS_URL || null,
 
-  // Elasticsearch
-  ELASTIC_NODE: process.env.ELASTIC_NODE || 'http://localhost:9200',
-  ELASTIC_USERNAME: process.env.ELASTIC_USERNAME || 'elastic',
-  ELASTIC_PASSWORD: process.env.ELASTIC_PASSWORD || 'changeme',
+  // Elasticsearch Removed (Using MongoDB BM25 Search instead)
 
-  // Kafka
-  KAFKA_BROKER: process.env.KAFKA_BROKER || 'localhost:9092',
-  KAFKA_CLIENT_ID: process.env.KAFKA_CLIENT_ID || 'crawlx-producer',
-  KAFKA_GROUP_ID: process.env.KAFKA_GROUP_ID || 'crawlx-consumer-group',
-  KAFKA_TOPIC: process.env.KAFKA_TOPIC || 'url-frontier',
+  // Kafka Removed (Using Redis Pub/Sub instead)
 
   // CORS
   FRONTEND_URL: process.env.FRONTEND_URL || 'https://distributed-web-crawler-one.vercel.app',

@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const CrawledPage = require('../models/CrawledPageModel');
-const { kafka } = require('../events/kafkaClient');
+const { enqueue } = require('../crawler/crawlerEngine');
 const logger = require('../utils/logger');
 
 const initRecrawlCron = () => {
@@ -21,20 +21,13 @@ const initRecrawlCron = () => {
         return;
       }
 
-      const producer = kafka.producer();
-      await producer.connect();
+      let queued = 0;
+      for (const page of stalePages) {
+        const success = await enqueue(page.url, 'Low', 0);
+        if (success) queued++;
+      }
 
-      const messages = stalePages.map(page => ({
-        value: JSON.stringify({ url: page.url, depth: 0, priority: 'low' })
-      }));
-
-      await producer.send({
-        topic: 'url-queue',
-        messages: messages
-      });
-
-      await producer.disconnect();
-      logger.info(`[CRON] Queued ${stalePages.length} stale pages for recrawling.`);
+      logger.info(`[CRON] Queued ${queued} stale pages for recrawling.`);
     } catch (err) {
       logger.error('[CRON] Recrawl routine failed: ' + err.message);
     }

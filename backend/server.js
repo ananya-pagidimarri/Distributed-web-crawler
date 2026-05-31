@@ -3,7 +3,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const { connectDB } = require('./database/mongoConnection');
-const { kafka, connectKafka } = require('./events/kafkaClient');
+const { subscriber } = require('./events/redisPubSub');
 const { PORT, FRONTEND_URL } = require('./config/envConfig');
 const logger = require('./utils/logger');
 const { apiLimiter } = require('./middlewares/rateLimiter');
@@ -15,9 +15,7 @@ const { initAnalyticsCron } = require('./crons/analyticsCron');
 const { initCleanupCron } = require('./crons/cleanupCron');
 const { initRecrawlCron } = require('./crons/recrawlCron');
 
-// Import Kafka Workers
-const { runIndexWorker } = require('./workers/indexWorker');
-const { runFailedWorker } = require('./workers/failedWorker');
+// Kafka Workers Removed
 
 const app = express();
 
@@ -50,31 +48,33 @@ io.on('connection', (socket) => {
 });
 
 // Connect Databases & Services
+// Connect Databases & Services
 connectDB();
-connectKafka().then(async () => {
-  // Set up Kafka Consumer for Socket.IO
-  try {
-    const consumer = kafka.consumer({ groupId: 'dashboard-group' });
-    await consumer.connect();
-    await consumer.subscribe({ topic: 'crawler-events', fromBeginning: false });
-    logger.info('[Kafka] Consumer attached to topic: crawler-events');
 
-    await consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        const eventStr = message.value.toString();
-        try {
-          const payload = JSON.parse(eventStr);
-          // Broadcast to all connected clients
-          io.emit('crawler.event', payload);
-        } catch (e) {
-          // parse error
-        }
+// Subscribe to Redis PubSub for Socket.IO
+try {
+  subscriber.subscribe('crawler-events', (err, count) => {
+    if (err) {
+      logger.error(`[Redis PubSub] Failed to subscribe: ${err.message}`);
+    } else {
+      logger.info(`[Redis PubSub] Subscribed to ${count} channel(s).`);
+    }
+  });
+
+  subscriber.on('message', (channel, message) => {
+    if (channel === 'crawler-events') {
+      try {
+        const payload = JSON.parse(message);
+        // Broadcast to all connected clients
+        io.emit('crawler.event', payload);
+      } catch (e) {
+        // parse error
       }
-    });
-  } catch (err) {
-    logger.error(`[Kafka] Consumer error: ${err.message}`);
-  }
-});
+    }
+  });
+} catch (err) {
+  logger.error(`[Redis PubSub] Subscription error: ${err.message}`);
+}
 
 // ─── Routes ─────────────────────────────────────────────
 app.use('/api/user', require('./APIs/AuthAPI'));         
@@ -114,9 +114,7 @@ initAnalyticsCron();
 initCleanupCron();
 initRecrawlCron();
 
-// Start Kafka Worker Threads
-runIndexWorker().catch(err => logger.error('IndexWorker failed to start: ' + err.message));
-runFailedWorker().catch(err => logger.error('FailedWorker failed to start: ' + err.message));
+// Kafka worker threads removed
 
 // Start the server
 server.listen(PORT, () => {
