@@ -1,288 +1,243 @@
 # CrawlX - Distributed Web Crawler & Search Engine
 
-## 🌐 Overview
-
-CrawlX is a scalable distributed web crawler and indexing platform designed to autonomously crawl websites, extract valuable information, index pages, and provide real-time monitoring through a modern React dashboard.
-
-The system is built using a centralized MongoDB architecture that allows multiple crawler nodes running on different machines to collaborate and process URLs simultaneously.
-
-Unlike traditional crawlers that require Kafka, RabbitMQ, or Redis queues, CrawlX uses MongoDB as a distributed task queue, making deployment simpler and more cost-effective.
+![Node.js](https://img.shields.io/badge/Node.js-18+-green)
+![React](https://img.shields.io/badge/React-Frontend-blue)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-Realtime-black)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
 
-# 🚀 Project Objectives
+# 🌐 Overview
 
-The primary goals of CrawlX are:
+CrawlX is a scalable distributed web crawler and search engine platform designed to crawl websites, extract content, discover links, build searchable indexes, and monitor crawling operations in real time.
 
-* Crawl websites automatically
-* Extract metadata and page content
-* Discover new URLs
-* Build a searchable index
-* Monitor crawler performance in real-time
-* Scale horizontally across multiple servers
-* Respect robots.txt rules
-* Avoid duplicate crawling
-* Recover automatically after crashes
+The system uses MongoDB as a centralized distributed queue, allowing multiple crawler instances running on different machines to work together simultaneously without requiring Kafka, RabbitMQ, or Redis.
+
+---
+
+# 🚀 Features
+
+## Distributed Crawling
+
+* Multiple crawler nodes
+* Shared MongoDB queue
+* Parallel URL processing
+* Horizontal scaling
+
+## Real-Time Monitoring
+
+* Live telemetry dashboard
+* CPU monitoring
+* Memory monitoring
+* Crawl speed tracking
+* Active worker tracking
+
+## Ethical Crawling
+
+* robots.txt compliance
+* Crawl delay handling
+* Domain restrictions
+* Safe crawling policies
+
+## Search Engine
+
+* Indexed page storage
+* Keyword search
+* Metadata search
+* Fast retrieval
+
+## Performance Optimization
+
+* Bloom Filter deduplication
+* URL normalization
+* Incremental crawling
+* Distributed processing
+
+## Recovery System
+
+* Auto resume after restart
+* Queue persistence
+* Self-healing crawler
+
+---
+
+# 🛠 Technology Stack
+
+## Frontend
+
+* React.js
+* Vite
+* Tailwind CSS
+* Recharts
+* Socket.IO Client
+* Lucide React
+
+## Backend
+
+* Node.js
+* Express.js
+* Socket.IO
+* JWT Authentication
+* Puppeteer
+
+## Database
+
+* MongoDB Atlas
+* Mongoose ODM
+
+## Crawling Engine
+
+* Puppeteer
+* Puppeteer Core
+* Sparticuz Chromium
+
+---
+
+# 📁 Project Structure
+
+```text
+CrawlX/
+│
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   ├── crawler/
+│   ├── socket/
+│   ├── utils/
+│   ├── server.js
+│   └── package.json
+│
+├── crawler-frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── pages/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   └── package.json
+│
+├── screenshots/
+├── docs/
+├── README.md
+└── LICENSE
+```
 
 ---
 
 # 🏗 System Architecture
 
-## High-Level Architecture
-
 ```text
-                    ┌─────────────────────┐
-                    │    React Dashboard   │
-                    └──────────┬──────────┘
-                               │
-                         Socket.IO
-                               │
-                               ▼
-                 ┌─────────────────────────┐
-                 │      Express Server      │
-                 │      (server.js)         │
-                 └──────────┬──────────────┘
-                            │
-          ┌─────────────────┼─────────────────┐
-          │                 │                 │
-          ▼                 ▼                 ▼
-   Crawl Engine      Search Engine      Auth APIs
-          │
-          ▼
-    MongoDB Atlas
-          │
-          ▼
-   Shared Distributed
-        URL Queue
-          │
- ┌────────┼────────┐
- │                 │
- ▼                 ▼
-Worker 1       Worker 2
-(Local PC)   (Cloud Server)
+React Dashboard
+       │
+       ▼
+Socket.IO
+       │
+       ▼
+Express Server
+       │
+ ┌─────┼─────┐
+ │     │     │
+ ▼     ▼     ▼
+Auth Search Crawler
+ APIs APIs Engine
+       │
+       ▼
+MongoDB Atlas
+       │
+       ▼
+Shared URL Queue
+       │
+ ┌─────┴─────┐
+ ▼           ▼
+Worker 1   Worker 2
 ```
 
 ---
 
-# ⚙️ Core Components
-
-## 1. Frontend Dashboard
-
-The frontend is developed using React and Tailwind CSS.
-
-### Responsibilities
-
-* User Authentication
-* Dashboard Analytics
-* Real-Time Monitoring
-* Search Interface
-* URL Submission
-* Queue Monitoring
-* Worker Monitoring
-
-### Technologies
-
-* React.js
-* Vite
-* TailwindCSS
-* Socket.io Client
-* Recharts
-* Lucide React Icons
-
----
-
-## Dashboard Modules
-
-### Login Page
-
-Provides secure authentication using JWT tokens.
-
-Features:
-
-* Admin Login
-* Token Storage
-* Protected Routes
-* Session Management
-
----
-
-### Dashboard Page
-
-Displays crawler statistics.
-
-Metrics:
-
-* Total Crawled Pages
-* Active Workers
-* Queue Size
-* Crawl Speed
-* Memory Usage
-* CPU Utilization
-
----
-
-### Search Page
-
-Allows users to search indexed websites.
-
-Search Features:
-
-* Keyword Search
-* Indexed Results
-* URL Ranking
-* Metadata Display
-
----
-
-### URL Submission Page
-
-Allows administrators to add seed URLs.
-
-Workflow:
+# 🔐 Authentication Flow
 
 ```text
-Admin Adds URL
-      │
-      ▼
-Backend API
-      │
-      ▼
-MongoDB Queue
-      │
-      ▼
-Crawler Picks URL
-```
-
----
-
-### Worker Monitoring
-
-Displays:
-
-* Worker ID
-* Worker Status
-* Pages Crawled
-* CPU Usage
-* RAM Usage
-* Crawl Speed
-
----
-
-# 🔧 Backend Architecture
-
-The backend acts as:
-
-1. API Server
-2. Search Server
-3. Master Orchestrator
-4. Distributed Worker
-
-All functionalities run inside a single Node.js application.
-
----
-
-## Backend Technologies
-
-* Node.js
-* Express.js
-* Socket.io
-* Puppeteer
-* Mongoose
-* JWT Authentication
-
----
-
-# 🔐 Authentication System
-
-### Registration Flow
-
-```text
-User Registration
-       │
-       ▼
-Validate Data
-       │
-       ▼
-Hash Password
-       │
-       ▼
-Store User
-       │
-       ▼
-Return Success
-```
-
----
-
-### Login Flow
-
-```text
-Email + Password
-        │
-        ▼
-Find User
-        │
-        ▼
+User Login
+     │
+     ▼
+Validate Credentials
+     │
+     ▼
 Compare Password
-        │
-        ▼
+     │
+     ▼
 Generate JWT
-        │
-        ▼
-Send Token
+     │
+     ▼
+Return Token
 ```
 
 ---
 
-# 🌎 Distributed Crawling System
-
-The most powerful feature of CrawlX.
-
-Multiple servers can run simultaneously.
-
-Example:
+# 🌎 Distributed Crawling Workflow
 
 ```text
-Laptop
-   │
-   ▼
-
+Seed URL Added
+      │
+      ▼
 MongoDB Queue
-
-   ▲
-   │
-
-Cloud Server
+      │
+      ▼
+Worker Picks URL
+      │
+      ▼
+robots.txt Check
+      │
+      ▼
+Launch Browser
+      │
+      ▼
+Extract Data
+      │
+      ▼
+Discover Links
+      │
+      ▼
+Normalize URLs
+      │
+      ▼
+Bloom Filter Check
+      │
+      ▼
+Store New URLs
+      │
+      ▼
+Store Indexed Page
 ```
-
-Both workers:
-
-* Pull URLs
-* Crawl Pages
-* Store Results
-* Add New URLs
-
-simultaneously.
 
 ---
 
-# 🕷 Crawling Engine Workflow
+# 🕷 Crawler Engine Flow
 
-## Step 1: Seed URL Injection
+## Step 1: URL Injection
 
-Example:
+Administrator submits:
 
 ```text
 https://example.com
 ```
 
-Stored in MongoDB queue.
+Stored inside UrlQueue collection.
 
 ---
 
-## Step 2: URL Fetching
+## Step 2: URL Assignment
 
-Worker requests a URL from queue.
+Worker requests pending URL.
 
 ```text
 Queue
@@ -295,25 +250,23 @@ Worker
 
 ## Step 3: robots.txt Validation
 
-Before crawling:
-
-```text
-example.com/robots.txt
-```
-
-Crawler checks:
+Checks:
 
 * Allowed paths
 * Disallowed paths
 * Crawl delays
 
+Example:
+
+```text
+https://example.com/robots.txt
+```
+
 ---
 
-## Step 4: Browser Launch
+## Step 4: Browser Initialization
 
-### Local Development
-
-Uses:
+### Development
 
 ```javascript
 Puppeteer
@@ -321,41 +274,33 @@ Puppeteer
 
 ### Production
 
-Uses:
-
 ```javascript
 Puppeteer-Core
-+
-Sparticuz Chromium
+@sparticuz/chromium
 ```
-
-This reduces memory usage on cloud platforms.
 
 ---
 
-## Step 5: Page Extraction
+## Step 5: Content Extraction
 
-Crawler extracts:
+Extracts:
 
-* Title
-* Description
-* Keywords
+* Page Title
+* Meta Description
 * Headings
-* Content
+* Main Content
 * Internal Links
 
 ---
 
 ## Step 6: Link Discovery
 
-Example:
-
 ```html
 <a href="/about">About</a>
 <a href="/contact">Contact</a>
 ```
 
-Discovered URLs are normalized and queued.
+Links are queued for future crawling.
 
 ---
 
@@ -364,10 +309,10 @@ Discovered URLs are normalized and queued.
 Converts:
 
 ```text
-https://site.com/?utm_source=facebook
+https://site.com/?utm_source=google
 ```
 
-to
+To:
 
 ```text
 https://site.com
@@ -378,15 +323,12 @@ Removes:
 * utm_source
 * utm_campaign
 * fbclid
-* tracking parameters
 
 ---
 
 ## Step 8: Deduplication
 
-Before insertion:
-
-Bloom Filter checks URL.
+Uses Bloom Filter.
 
 ```text
 URL
@@ -399,19 +341,11 @@ Bloom Filter
  └─ New → Insert
 ```
 
-Benefits:
-
-* O(1) lookup
-* Memory Efficient
-* Millions of URLs
-
 ---
 
-## Step 9: Store Indexed Data
+## Step 9: Index Storage
 
-Saved into MongoDB.
-
-Stored Fields:
+Stores:
 
 ```json
 {
@@ -425,34 +359,40 @@ Stored Fields:
 
 ---
 
-# 📊 Real-Time Telemetry
+# 📊 Real-Time Dashboard
 
-Uses Socket.IO.
+Dashboard displays:
 
-Workers continuously emit:
+## Crawl Metrics
 
-```javascript
-{
-  cpuUsage,
-  memoryUsage,
-  crawlRate,
-  pagesProcessed
-}
-```
+* Pages Crawled
+* Queue Size
+* Crawl Rate
+* Success Rate
 
-Dashboard updates instantly without page refresh.
+## System Metrics
+
+* CPU Usage
+* RAM Usage
+* Worker Status
+
+## Search Analytics
+
+* Indexed Pages
+* Search Queries
+* Search Results
 
 ---
 
-# 🗄 Database Collections
+# 🗄 Database Design
 
 ## Users
 
 ```javascript
 {
-  email,
-  password,
-  role
+ email,
+ password,
+ role
 }
 ```
 
@@ -462,10 +402,10 @@ Dashboard updates instantly without page refresh.
 
 ```javascript
 {
-  url,
-  status,
-  priority,
-  assignedWorker
+ url,
+ status,
+ priority,
+ assignedWorker
 }
 ```
 
@@ -475,10 +415,11 @@ Dashboard updates instantly without page refresh.
 
 ```javascript
 {
-  url,
-  title,
-  content,
-  metadata
+ url,
+ title,
+ description,
+ content,
+ links
 }
 ```
 
@@ -488,10 +429,10 @@ Dashboard updates instantly without page refresh.
 
 ```javascript
 {
-  workerId,
-  cpu,
-  memory,
-  pagesCrawled
+ workerId,
+ cpu,
+ memory,
+ pagesCrawled
 }
 ```
 
@@ -500,7 +441,7 @@ Dashboard updates instantly without page refresh.
 # 🔍 Search Engine Workflow
 
 ```text
-User Searches
+User Search
       │
       ▼
 Search API
@@ -509,29 +450,25 @@ Search API
 MongoDB Index
       │
       ▼
-Matching Pages
+Matched Pages
       │
       ▼
 Results Returned
 ```
 
-Search considers:
+Searches:
 
-* Page Title
-* Meta Description
-* Content Keywords
+* Titles
+* Descriptions
+* Keywords
+* Content
 
 ---
 
-# 🔄 Auto Resume System
-
-When server restarts:
+# 🔄 Auto Recovery System
 
 ```text
-Server Crash
-      │
-      ▼
-Restart
+Server Restart
       │
       ▼
 Load Queue State
@@ -540,127 +477,127 @@ Load Queue State
 Resume Crawling
 ```
 
-No progress is lost.
-
----
-
-# ☁️ Deployment Architecture
-
-## Backend Deployment
-
-Platform:
-
-Render
-
-Responsibilities:
-
-* APIs
-* Crawlers
-* WebSockets
-
----
-
-## Frontend Deployment
-
-Platform:
-
-Vercel
-
-Responsibilities:
-
-* Dashboard
-* Search Interface
-* Analytics
-
----
-
-## Database
-
-Platform:
-
-MongoDB Atlas
-
-Responsibilities:
-
-* Queue Storage
-* User Storage
-* Search Index
-
----
-
-# 🧠 Advanced Features
-
-### Bloom Filter Deduplication
-
-Prevents duplicate URLs.
-
----
-
-### robots.txt Compliance
-
-Ensures ethical crawling.
-
----
-
-### Distributed Workers
-
-Unlimited horizontal scaling.
-
----
-
-### Live Monitoring
-
-Real-time crawler insights.
-
----
-
-### Automatic Recovery
-
-Resumes after failures.
-
----
-
-### Cloud Optimized
-
-Works efficiently on Render.
+No crawl progress is lost.
 
 ---
 
 # 📈 Performance Optimizations
 
-* Bloom Filters
-* URL Canonicalization
-* Shared Mongo Queue
-* Headless Chromium
-* Incremental Crawling
-* Memory Monitoring
+## Bloom Filter
+
+* O(1) URL lookup
+* Memory efficient
+* Millions of URLs
+
+## URL Canonicalization
+
+Removes duplicate tracking URLs.
+
+## Shared Mongo Queue
+
+Eliminates Kafka dependency.
+
+## Headless Chromium
+
+Optimized cloud execution.
 
 ---
 
-### Screenshot Capture
+# ☁️ Deployment
 
-Store webpage previews.
+## Backend Deployment (Render)
+
+Build Command:
+
+```bash
+npm install
+```
+
+Start Command:
+
+```bash
+npm start
+```
+
+Environment Variables:
+
+```env
+PORT=5000
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_secret
+NODE_ENV=production
+```
 
 ---
 
+## Frontend Deployment (Vercel)
 
-# 🛠 Local Setup
+Environment Variables:
 
-## Backend
+```env
+VITE_API_URL=https://your-backend.onrender.com
+```
+
+Deploy directly from GitHub.
+
+---
+
+# 💻 Local Development Setup
+
+## Clone Repository
+
+```bash
+git clone https://github.com/ananya-pagidimarri/Distributed-web-crawler.git
+
+cd Distributed-web-crawler
+```
+
+---
+
+# Backend Setup
 
 ```bash
 cd backend
+
 npm install
+```
+
+Create .env
+
+```env
+PORT=5000
+NODE_ENV=development
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=super_secret_key
+DEFAULT_ADMIN_EMAIL=admin@crawlx.io
+DEFAULT_ADMIN_PASSWORD=admin
+```
+
+Run Backend
+
+```bash
 npm run dev
 ```
 
 ---
 
-## Frontend
+# Frontend Setup
 
 ```bash
 cd crawler-frontend
+
 npm install
+```
+
+Create .env
+
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+Run Frontend
+
+```bash
 npm run dev
 ```
 
@@ -676,4 +613,26 @@ Password:
 admin
 ```
 
+---
 
+# 📸 Screenshots
+
+## Login Page
+
+Add screenshot here
+
+```markdown
+![Login](screenshots/login.png)
+```
+
+## Dashboard
+
+```markdown
+![Dashboard](screenshots/dashboard.png)
+```
+
+## Search Page
+
+```markdown
+![Search](screenshots/search.png)
+```
